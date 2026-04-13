@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2026 PostalDataPI (Thom Ives)
 """
 PostalDataPI MCP Server
 
