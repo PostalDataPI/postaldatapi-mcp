@@ -3,7 +3,8 @@
 PostalDataPI MCP Server
 
 Exposes PostalDataPI endpoints as MCP tools so AI agents (Claude, etc.)
-can look up, validate, and search postal codes across 70+ countries.
+can look up, validate, and search postal codes across 240+ countries
+with rich metadata: timezone, admin regions, elevation, and coordinates.
 
 Usage:
     # Direct run
@@ -39,7 +40,7 @@ API_KEY = os.environ.get("POSTALDATAPI_KEY", "")
 # Initialize MCP server
 mcp = FastMCP(
     "postaldatapi",
-    instructions="PostalDataPI: Look up, validate, and search postal codes across 70+ countries. Sub-10ms responses.",
+    instructions="PostalDataPI: Look up, validate, and search postal codes across 240+ countries with rich metadata (timezone, admin regions, elevation, coordinates). Sub-10ms responses.",
 )
 
 
@@ -78,7 +79,7 @@ async def lookup_postal_code(postal_code: str, country: str = "US") -> str:
     """Look up a postal code and get city, state, and region information.
 
     Works for ZIP codes (US), postcodes (UK), PLZ (Germany), and postal codes
-    in 70+ countries. Use this when someone asks about a postal code, wants to
+    in 240+ countries. Use this when someone asks about a postal code, wants to
     know what city a ZIP code belongs to, or needs address information.
 
     Args:

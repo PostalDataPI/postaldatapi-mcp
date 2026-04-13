@@ -1,15 +1,15 @@
 # PostalDataPI MCP Server
 
-MCP (Model Context Protocol) server for [PostalDataPI](https://postaldatapi.com) — lets AI agents look up, validate, and search postal codes across 70+ countries.
+MCP (Model Context Protocol) server for [PostalDataPI](https://postaldatapi.com) — lets AI agents look up, validate, and search postal codes across **240+ countries** with rich metadata: timezone, administrative regions, elevation, and coordinates.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `lookup_postal_code` | Get city and state for a postal code (US ZIP, UK postcode, German PLZ, etc.) |
+| `lookup_postal_code` | Get city, state/region, and abbreviation for a postal code (US ZIP, UK postcode, German PLZ, etc.) |
 | `validate_postal_code` | Check if a postal code exists in a country |
 | `search_by_city` | Find all postal codes for a city |
-| `get_postal_code_metadata` | Full metadata: coordinates, county, timezone, and more |
+| `get_postal_code_metadata` | Full metadata: coordinates, admin hierarchy, timezone, elevation, and more |
 
 ## Setup
 
@@ -61,7 +61,33 @@ Claude will automatically use the PostalDataPI tools to answer.
 
 ## Supported Countries
 
-70+ countries including US, UK, Canada, Germany, France, Japan, Australia, and more. See the full list at [postaldatapi.com/countries](https://postaldatapi.com/countries).
+240+ countries and territories including US, UK, Canada, Germany, France, Japan, Australia, Brazil, India, and many more. See the full list at [postaldatapi.com/countries](https://postaldatapi.com/countries).
+
+## Rich Metadata
+
+Beyond basic lookups, the `get_postal_code_metadata` tool returns up to 18 fields per postal code including:
+
+- **Coordinates** (latitude, longitude)
+- **Timezone** (e.g., `America/Mexico_City`, `Europe/Berlin`)
+- **Administrative hierarchy** (state/province, county, municipality)
+- **Elevation** (meters above sea level)
+- **Place name** and country information
+
+Example response for Mexico City 06000:
+
+```json
+{
+  "postalCode": "06000",
+  "country": "MX",
+  "placeName": "Centro",
+  "latitude": 19.4364,
+  "longitude": -99.1553,
+  "timezone": "America/Mexico_City",
+  "adminLevel1": "Ciudad de México",
+  "adminLevel2": "Cuauhtémoc",
+  "elevation": 2239
+}
+```
 
 ## Links
 
