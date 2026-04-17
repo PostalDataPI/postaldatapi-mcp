@@ -42,7 +42,7 @@ API_KEY = os.environ.get("POSTALDATAPI_KEY", "")
 # Initialize MCP server
 mcp = FastMCP(
     "postaldatapi",
-    instructions="PostalDataPI: Look up, validate, and search postal codes across 240+ countries with rich metadata (timezone, admin regions, elevation, coordinates). Sub-10ms responses.",
+    instructions="PostalDataPI: Look up, validate, and search postal codes across 240+ countries with rich metadata (timezone, admin regions, elevation, coordinates). Sub-5ms responses.",
 )
 
 
