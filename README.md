@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/postaldatapi-mcp.svg)](https://pypi.org/project/postaldatapi-mcp/)
 
-MCP (Model Context Protocol) server for [PostalDataPI](https://postaldatapi.com) — lets AI agents look up, validate, and search postal codes across **240+ countries** with rich metadata: timezone, administrative regions, elevation, and coordinates.
+MCP (Model Context Protocol) server for [PostalDataPI](https://postaldatapi.com) — lets AI agents look up, validate, and search postal codes across **240+ countries and territories** with rich metadata: timezone, administrative regions, elevation, and coordinates.
 
 ## Tools
 
