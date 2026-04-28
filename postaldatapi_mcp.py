@@ -60,7 +60,7 @@ async def _call_api(endpoint: str, body: dict[str, Any]) -> dict[str, Any]:
             json=body,
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "PostalDataPI-MCP/0.1.0",
+                "User-Agent": "PostalDataPI-MCP/0.2.0",
             },
         )
         return resp.json()
@@ -133,6 +133,74 @@ async def validate_postal_code(postal_code: str, country: str = "US") -> str:
 
     is_valid = data.get("valid", False)
     return f"Postal code {postal_code} ({country}): {'VALID' if is_valid else 'INVALID'}"
+
+
+@mcp.tool()
+async def validate_bulk_postal_codes(records: list[dict[str, str]]) -> str:
+    """Validate up to 1,000 postal codes in a single request.
+
+    Use this when someone gives you a list of postal codes (especially mixed
+    countries) and asks which are valid, or when cleaning up an address list.
+    Far more efficient than calling validate_postal_code in a loop.
+
+    Args:
+        records: List of {"postalCode": str, "countryCode": str} dicts.
+            Mixed countries are supported. Maximum 1,000 records per call.
+            Modern field naming (postalCode/countryCode) is required —
+            this is the canonical naming for the bulk endpoint.
+
+    Returns:
+        Per-record validation results with normalized canonical forms (e.g.
+        "SW1A 1AA" → "SW1A" for GB outcode-only datasets) and reason codes
+        for invalid entries (not_found, unknown_country).
+    """
+    if not records:
+        return "Error: records list cannot be empty"
+    if len(records) > 1000:
+        return f"Error: maximum 1,000 records per request (got {len(records)})"
+
+    # Normalize keys: tolerate snake_case input from agents that pattern-match
+    # the Python convention.
+    normalized = []
+    for i, r in enumerate(records):
+        pc = r.get("postalCode") or r.get("postal_code")
+        cc = r.get("countryCode") or r.get("country_code") or r.get("country")
+        if not pc or not cc:
+            return f"Error: records[{i}] needs both postalCode and countryCode"
+        normalized.append({"postalCode": pc, "countryCode": str(cc).upper()})
+
+    data = await _call_api("validate-bulk", {"records": normalized})
+
+    err = _format_error(data)
+    if err:
+        return err
+
+    results = data.get("results", [])
+    if not results:
+        return "No results returned"
+
+    valid_count = sum(1 for r in results if r.get("valid"))
+    invalid_count = len(results) - valid_count
+
+    lines = [
+        f"Validated {len(results)} postal codes: {valid_count} valid, {invalid_count} invalid",
+        f"Total cost: ${data.get('totalCost', 0):.6f}",
+        f"Balance after: ${data.get('balance', 0):.6f}",
+        "",
+    ]
+
+    for r in results:
+        pc = r.get("postalCode", "")
+        cc = r.get("countryCode", "")
+        if r.get("valid"):
+            normalized_form = r.get("normalized") or pc
+            suffix = f" → {normalized_form}" if normalized_form != pc else ""
+            lines.append(f"  {pc} ({cc}): VALID{suffix}")
+        else:
+            reason = r.get("reason", "unknown")
+            lines.append(f"  {pc} ({cc}): INVALID ({reason})")
+
+    return "\n".join(lines)
 
 
 @mcp.tool()
