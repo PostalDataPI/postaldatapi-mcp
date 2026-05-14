@@ -60,7 +60,7 @@ async def _call_api(endpoint: str, body: dict[str, Any]) -> dict[str, Any]:
             json=body,
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "PostalDataPI-MCP/0.2.0",
+                "User-Agent": "PostalDataPI-MCP/0.3.0",
             },
         )
         return resp.json()
@@ -264,7 +264,7 @@ async def get_postal_code_metadata(postal_code: str, country: str = "US") -> str
     Returns:
         Full metadata including coordinates, region, and country-specific fields.
     """
-    data = await _call_api("metazip", {"zipcode": postal_code, "country": country})
+    data = await _call_api("metacode", {"zipcode": postal_code, "country": country})
 
     err = _format_error(data)
     if err:
